@@ -11,14 +11,14 @@ enum {
     NAND_READ =  0,
     NAND_WRITE = 1,
     NAND_ERASE = 2,
-
+    // Latency 지정
     CMD_LATENCY = 0,
     DATA_TRANSFER_LATENCY = 40, // 0.1us
     NAND_READ_LATENCY = 40000, //-> 40000ns 40us
     NAND_PROG_LATENCY = 200000,
     NAND_ERASE_LATENCY = 2000000,
 };
-
+// GC인지 user IO 인지 구분
 enum {
     USER_IO = 0,
     GC_IO = 1,
@@ -54,7 +54,7 @@ enum {
 #define LUN_BITS    (8)
 #define CH_BITS     (7)
 
-/* describe a physical page addr */
+// physical page 구조체 만들어줌
 struct ppa {
     union {
         struct {
@@ -74,7 +74,7 @@ struct ppa {
 typedef int nand_sec_status_t;
 
 
-
+// page, block, plane, lun등에 대한 구조체 정의
 struct nand_page {
     nand_sec_status_t *sec;
     int nsecs;
@@ -110,7 +110,7 @@ struct ssd_channel {
     bool busy;
     uint64_t gc_endtime;
 };
-
+// 필요 파라미터 정의
 struct ssdparams {
     int secsz;        /* sector size in bytes */
     int secs_per_pg;  /* # of sectors per page */
@@ -174,6 +174,7 @@ typedef struct line {
     size_t pos;
 } line;
 
+// blk 단위로 관리하기 위한 blk 구조체 정의
 typedef struct blk {
 	struct nand_page *pg;
     int id;
@@ -185,6 +186,8 @@ typedef struct blk {
 	int wp;
 } blk;
 
+
+// blk 관리를 위한 구조체 정의
 struct blk_mgmt {
     struct blk *blks;
     struct ssdparams *sp;
@@ -199,7 +202,7 @@ struct blk_mgmt {
     int free_blk_cnt;
 };
 
-/* wp: record next write addr */
+// blk을 찾아서 쓰기 위한 포인터 정의
 struct write_pointer {
     struct line *curline;
     struct blk *curblk;
@@ -235,6 +238,8 @@ struct nand_cmd {
     int64_t stime; /* Coperd: request arrival time */
 };
 
+
+// blk 리스트를 링크드 리스트로 관리하기 위한 노드와 리스트 정의
 typedef struct blk_list_node {
     struct blk_list_node *prev;
     struct blk_list_node *next;
